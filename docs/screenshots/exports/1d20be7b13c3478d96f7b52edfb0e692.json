@@ -1,0 +1,26 @@
+{
+  "id": "1d20be7b13c3478d96f7b52edfb0e692",
+  "filename": "test_document.png",
+  "language": "en",
+  "confidence": 0.9123,
+  "ocr_text": "Name: Rahul Sharma\nPhone: 9876543210\nEmail: rahulsharma@example com\nDate: 30/08/2026\nAmount: Rs 12500\nPIN Code: 411001",
+  "extracted": {
+    "name": "Rahul Sharma",
+    "address": "",
+    "phone": "9876543210",
+    "email": "",
+    "date": "30/08/2026",
+    "amount": "12500",
+    "pin_code": "411001",
+    "organization": "",
+    "language": "en",
+    "keywords": [
+      "rahul",
+      "sharma",
+      "rahulsharma",
+      "example",
+      "code"
+    ]
+  },
+  "created_at": "2026-09-07T12:27:30.865628+00:00"
+}
