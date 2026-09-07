@@ -1,0 +1,13 @@
+Flask
+flask-cors
+python-dotenv
+Pillow
+numpy
+opencv-python
+easyocr
+langdetect
+PyMongo
+PyMuPDF
+reportlab
+spacy
+pytest

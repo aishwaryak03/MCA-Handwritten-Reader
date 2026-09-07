@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regional Language Handwritten Document Reader</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">MCA Final Semester Project</p>
+      <h1>AI-Based Regional Language Handwritten Document Reader</h1>
+      <p class="subtitle">Handwritten OCR + Language Detection + Intelligent Information Extraction</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card upload-card">
+      <h2>Upload Document</h2>
+      <p class="muted">Supported formats: JPG, JPEG, PNG and PDF</p>
+
+      <div id="dropZone" class="drop-zone">
+        <input id="fileInput" type="file" accept=".jpg,.jpeg,.png,.pdf">
+        <div class="upload-icon">↑</div>
+        <strong>Choose a document</strong>
+        <span>or drag and drop it here</span>
+      </div>
+
+      <div class="controls">
+        <label>
+          Language
+          <select id="language">
+            <option value="auto">Auto Detect</option>
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="mr">Marathi</option>
+            <option value="kn">Kannada</option>
+          </select>
+        </label>
+        <button id="processBtn" class="primary" disabled>Process Document</button>
+      </div>
+
+      <div id="status" class="status"></div>
+    </section>
+
+    <section id="resultSection" class="results hidden">
+      <div class="summary-grid">
+        <div class="metric card">
+          <span>Detected Language</span>
+          <strong id="resultLanguage">-</strong>
+        </div>
+        <div class="metric card">
+          <span>OCR Confidence</span>
+          <strong id="resultConfidence">-</strong>
+        </div>
+        <div class="metric card">
+          <span>OCR Detections</span>
+          <strong id="resultDetections">-</strong>
+        </div>
+        <div class="metric card">
+          <span>Database</span>
+          <strong id="resultDatabase">-</strong>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <section class="card">
+          <div class="section-title">
+            <h2>Extracted Information</h2>
+            <div class="actions">
+              <button id="jsonBtn">JSON</button>
+              <button id="csvBtn">CSV</button>
+              <button id="pdfBtn">PDF</button>
+            </div>
+          </div>
+          <div id="fields" class="fields"></div>
+        </section>
+
+        <section class="card">
+          <h2>OCR Text</h2>
+          <pre id="ocrText" class="ocr"></pre>
+        </section>
+      </div>
+
+      <section class="card">
+        <h2>Document History</h2>
+        <div id="history"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p>AI-Based Regional Language Handwritten Document Reader and Intelligent Information Extraction System</p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
