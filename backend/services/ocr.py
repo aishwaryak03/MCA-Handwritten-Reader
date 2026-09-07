@@ -1,7 +1,10 @@
-from functools import lru_cache
+﻿from functools import lru_cache
 from pathlib import Path
 import numpy as np
 import easyocr
+
+MODEL_DIR = Path(__file__).resolve().parents[1] / "easyocr_models"
+MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
 LANGUAGE_MODELS = {
     "en": ["en"],
@@ -14,7 +17,7 @@ LANGUAGE_MODELS = {
 @lru_cache(maxsize=4)
 def get_reader(language="en"):
     language = language if language in LANGUAGE_MODELS else "en"
-    return easyocr.Reader(LANGUAGE_MODELS[language], gpu=False)
+    return easyocr.Reader(LANGUAGE_MODELS[language], gpu=False, model_storage_directory=str(MODEL_DIR))
 
 
 def perform_ocr(image, language="en"):
@@ -61,3 +64,4 @@ def perform_ocr(image, language="en"):
         "confidence": round(average_confidence, 4),
         "detections": len(lines),
     }
+

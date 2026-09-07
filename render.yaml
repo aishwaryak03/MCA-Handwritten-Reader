@@ -1,6 +1,6 @@
-services:
+﻿services:
   - type: web
     name: mca-handwritten-reader
     runtime: python
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: cd backend && gunicorn app:app --bind 0.0.0.0:$PORT
+    buildCommand: pip install -r backend/requirements.txt && cd backend && python -c "import easyocr; easyocr.Reader(['en'], gpu=False, model_storage_directory='easyocr_models')" && python -c "import easyocr; easyocr.Reader(['en','hi'], gpu=False, model_storage_directory='easyocr_models')" && python -c "import easyocr; easyocr.Reader(['en','mr'], gpu=False, model_storage_directory='easyocr_models')" && python -c "import easyocr; easyocr.Reader(['en','kn'], gpu=False, model_storage_directory='easyocr_models')"
+    startCommand: cd backend && gunicorn app:app --bind 0.0.0.0:$PORT --timeout 300
