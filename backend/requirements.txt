@@ -12,7 +12,6 @@ colorama==0.4.6
 confection==1.3.3
 cymem==2.0.13
 dnspython==2.8.0
-easyocr==1.7.2
 en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
 filelock==3.32.5
 Flask==3.1.3
@@ -50,6 +49,7 @@ Pygments==2.21.0
 pymongo==4.18.0
 pymupdf==1.28.2
 pytest==9.1.1
+pytesseract
 python-bidi==0.6.11
 python-dotenv==1.2.3
 PyYAML==6.0.3
@@ -70,8 +70,6 @@ srsly==2.5.3
 sympy==1.14.0
 thinc==8.3.13
 tifffile==2026.8.23
-torch==2.14.0
-torchvision==0.29.0
 tqdm==4.70.0
 typer==0.27.2
 typing-inspection==0.4.4

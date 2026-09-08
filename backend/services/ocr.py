@@ -1,61 +1,92 @@
-﻿from functools import lru_cache
-from pathlib import Path
+﻿import os
+import cv2
 import numpy as np
+import pytesseract
 
-MODEL_DIR = Path(__file__).resolve().parents[1] / "easyocr_models"
-MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
 LANGUAGE_MODELS = {
-    "en": ["en"],
-    "hi": ["en", "hi"],
-    "mr": ["en", "mr"],
-    "kn": ["en", "kn"],
+    "en": "eng",
+    "hi": "eng+hin",
+    "mr": "eng+mar",
+    "kn": "eng+kan",
 }
 
 
-@lru_cache(maxsize=4)
+# Windows: use the installed Tesseract directly
+if os.name == "nt":
+    windows_tesseract = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    if os.path.exists(windows_tesseract):
+        pytesseract.pytesseract.tesseract_cmd = windows_tesseract
+
+
 def get_reader(language="en"):
-    import easyocr
-    language = language if language in LANGUAGE_MODELS else "en"
-    return easyocr.Reader(LANGUAGE_MODELS[language], gpu=False, model_storage_directory=str(MODEL_DIR))
+    return LANGUAGE_MODELS.get(language, "eng")
 
 
 def perform_ocr(image, language="en"):
-    reader = get_reader(language)
+    lang = get_reader(language)
 
-    if hasattr(image, "shape"):
+    # Handle PIL Image
+    if hasattr(image, "convert"):
+        rgb_image = np.array(image.convert("RGB"))
+        input_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
+
+    # Handle OpenCV / NumPy image
+    elif hasattr(image, "shape"):
         input_image = image
-    else:
-        input_image = str(image)
 
-    results = reader.readtext(
-        input_image,
-        detail=1,
-        paragraph=False,
-        contrast_ths=0.08,
-        adjust_contrast=0.6,
-        mag_ratio=1.5,
-        text_threshold=0.45,
-        low_text=0.25,
-        link_threshold=0.25,
-        canvas_size=3000,
-        rotation_info=[90, 180, 270],
+    # Handle file path
+    else:
+        input_image = cv2.imread(str(image))
+
+    if input_image is None:
+        raise ValueError("Unable to read input image.")
+
+    # Convert to grayscale
+    if len(input_image.shape) == 3:
+        gray = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = input_image
+
+    # Improve text visibility
+    gray = cv2.GaussianBlur(gray, (3, 3), 0)
+
+    processed = cv2.adaptiveThreshold(
+        gray,
+        255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        31,
+        11
+    )
+
+    # Tesseract OCR
+    data = pytesseract.image_to_data(
+        processed,
+        lang=lang,
+        config="--oem 1 --psm 6",
+        output_type=pytesseract.Output.DICT
     )
 
     lines = []
     confidences = []
 
-    for item in results:
-        if len(item) != 3:
-            continue
-        _, text, confidence = item
+    for i, text in enumerate(data["text"]):
         text = str(text).strip()
-        if text:
+
+        try:
+            confidence = float(data["conf"][i])
+        except (ValueError, TypeError):
+            confidence = -1
+
+        if text and confidence >= 0:
             lines.append(text)
-            confidences.append(float(confidence))
+            confidences.append(confidence / 100.0)
 
     average_confidence = (
-        sum(confidences) / len(confidences) if confidences else 0.0
+        sum(confidences) / len(confidences)
+        if confidences
+        else 0.0
     )
 
     return {
@@ -64,5 +95,3 @@ def perform_ocr(image, language="en"):
         "confidence": round(average_confidence, 4),
         "detections": len(lines),
     }
-
-
